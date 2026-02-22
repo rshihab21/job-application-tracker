@@ -24,10 +24,8 @@ function getFilteredJobs() {
 
 const total = jobs.length;
 const interview = jobs.filter(j => j.status === "interview");
-console.log(interview)
-
 const rejected = jobs.filter(j => j.status === "rejected");
-console.log(rejected);
+
 
 document.getElementById("totalCount").innerText = total;
 
@@ -35,4 +33,89 @@ const filteredCount = getFilteredJobs().length;
 document.getElementById("tabCount").innerText =
     `${filteredCount} of ${total} jobs`;
 
-//   card generate
+
+function updateCounts() {
+    const total = jobs.length;
+    const interview = jobs.filter(j => j.status === "interview").length;
+    const rejected = jobs.filter(j => j.status === "rejected").length;
+
+    document.getElementById("totalCount").innerText = total;
+    document.getElementById("interviewCount").innerText = interview;
+    document.getElementById("rejectedCount").innerText = rejected;
+
+    const filteredCount = getFilteredJobs().length;
+    document.getElementById("tabCount").textContent = `${filteredCount} of ${total} jobs`;
+}
+
+
+function createCard(job) {
+    const div = document.createElement("div");
+    div.className = "bg-white rounded-2xl shadow p-4";
+
+    div.innerHTML = `
+        <div class="flex justify-between items-start gap-3">
+          <div>
+            <h3 class="font-semibold text-lg">${job.companyName}</h3>
+            <p class="text-sm text-gray-600">${job.position}</p>
+            <p class="text-xs text-gray-500 mt-1">${job.location} • ${job.type} • ${job.salary}</p>
+            <p class="text-sm mt-2 text-gray-700">${job.description}</p>
+          </div>
+          <button class="deleteBtn text-gray-400 hover:text-red-500" data-id="${job.id}"><i class="fa-solid fa-trash cursor-pointer"></i></button>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+          <button class="interviewBtn px-3 py-1 rounded-lg border text-green-600 border-green-600" data-id="${job.id}">Interview</button>
+          <button class="rejectedBtn px-3 py-1 rounded-lg border text-red-600 border-red-600" data-id="${job.id}">Rejected</button>
+        </div>
+      `;
+
+    return div;
+}
+
+function renderJobs() {
+    jobsContainer.innerHTML = "";
+    const filtered = getFilteredJobs();
+
+    if (filtered.length === 0) {
+        emptyState.classList.remove("hidden");
+    } else {
+        emptyState.classList.add("hidden");
+        filtered.forEach(job => jobsContainer.appendChild(createCard(job)));
+    }
+
+    updateCounts();
+}
+document.addEventListener("click", (e) => {
+    const id = Number(e.target.dataset.id);
+    const job = jobs.find(j => j.id === id);
+
+    if (e.target.classList.contains("interviewBtn") && job) {
+        job.status = job.status === "interview" ? "all" : "interview";
+        renderJobs();
+    }
+
+    if (e.target.classList.contains("rejectedBtn") && job) {
+        job.status = job.status === "rejected" ? "all" : "rejected";
+        renderJobs();
+    }
+
+    if (e.target.classList.contains("deleteBtn") && job) {
+        const index = jobs.findIndex(j => j.id === id);
+        if (index !== -1) jobs.splice(index, 1);
+        renderJobs();
+    }
+
+    if (e.target.classList.contains("tab-btn")) {
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.classList.remove("bg-blue-600", "text-white");
+            btn.classList.add("bg-gray-200");
+        });
+
+        e.target.classList.add("bg-blue-600", "text-white");
+        e.target.classList.remove("bg-gray-200");
+
+        currentTab = e.target.dataset.tab;
+        renderJobs();
+    }
+});
+renderJobs();
