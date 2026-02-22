@@ -68,7 +68,7 @@ function createCard(job) {
           <div>
             <h3 class="font-semibold text-lg">${job.companyName}</h3>
             <p class="text-sm text-gray-600">${job.position}</p>
-            <p class="text-xs text-gray-500 mt-1">${job.location} • ${job.type} • ${job.salary}</p>
+            <p class="text-xs text-gray-500 mt-1">${job.location} <i class="fa-solid fa-dot w-1 h-1 bg-gray-200 rounded-full"></i> ${job.type}  ${job.salary}</p>
             <span class="mt-3 block">${statusBadge}</span>
             <p class="text-sm mt-2 text-gray-700">${job.description}</p>
           </div>
