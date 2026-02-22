@@ -43,8 +43,12 @@ function updateCounts() {
     document.getElementById("interviewCount").innerText = interview;
     document.getElementById("rejectedCount").innerText = rejected;
 
-    const filteredCount = getFilteredJobs().length;
-    document.getElementById("tabCount").textContent = `${filteredCount} of ${total} jobs`;
+    if (currentTab === "all") {
+        document.getElementById("tabCount").innerText = `${total} jobs`;
+    } else {
+        const filteredCount = getFilteredJobs().length;
+        document.getElementById("tabCount").innerText = `${filteredCount} of ${total} jobs`;
+    }
 }
 
 
